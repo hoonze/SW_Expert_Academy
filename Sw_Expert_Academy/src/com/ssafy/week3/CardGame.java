@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-//규영이와 인영이의 카드게임
+//규영이와 인영이의 카드게임1
 public class CardGame {
 	static boolean[] cards;
 	static int[] A;
