@@ -39,12 +39,23 @@ public class Baek_2567 {
 						if(nx < 0 || ny < 0 || nx >=101 || ny >= 101)
 							continue;
 						
-						if(arr[nx][ny] == 1)
+						if(arr[nx][ny] == 1) {
+							arr[nx][ny] = 2;
 							cnt++;
+						}
 					}
 				}
 			}
 		}
+		
+		for(int i = 0; i < 30; i++) {
+			for(int j = 0; j < 30; j++) {
+				System.out.print(arr[i][j]);
+			}
+			System.out.println();
+		}
+		
 		System.out.println(cnt);
+		
 	}
 }
