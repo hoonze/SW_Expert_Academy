@@ -61,6 +61,7 @@ public class Baek_17135_캐슬_디펜스 {
 							flag = true;
 						}
 						
+						//거리가 같다면 왼쪽에 있는 적 우선 공격
 						if(len == min && y > j) {
 							x = i;
 							y = j;
@@ -117,4 +118,3 @@ public class Baek_17135_캐슬_디펜스 {
 		}
 	}
 }
-
