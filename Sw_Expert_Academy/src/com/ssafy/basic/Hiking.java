@@ -3,91 +3,79 @@ package com.ssafy.basic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Hiking {
 	static int[][] map;
-	static int[] X = { 0, 0, -1, 1 };
-	static int[] Y = { 1, -1, 0, 0 };
-	static int n,k,answer =0;
-	static LinkedList<Pos> q;
-	
-	static class Pos{
-		int x;
-		int y;
-		int cnt;
-		
-		public Pos(int x, int y, int cnt) {
-			this.x = x;
-			this.y = y;
-			this.cnt = cnt;
+	static boolean[][] check;
+	static int[] X = { -1, 0, 1, 0 };
+	static int[] Y = { 0, 1, 0, -1 };
+	static int N, K, answer;
+
+	static void dfs(int x, int y, int k, int now, int cnt) {
+		for (int i = 0; i < 4; i++) {
+			int nx = x + X[i];
+			int ny = y + Y[i];
+
+			if (nx < 0 || ny < 0 || nx >= N || ny >= N || check[nx][ny])
+				continue;
+
+			
+			if (now <= map[nx][ny] && k > 0) {
+				for (int j = 1; j <= k; j++) {
+					if (now <= map[nx][ny] - j)
+						continue;
+					check[nx][ny] = true;
+					dfs(nx, ny, 0, map[nx][ny]-j, cnt + 1);
+					check[nx][ny] = false;
+				}
+				continue;
+			}
+			if(now > map[nx][ny]) {
+				check[nx][ny] = true;
+				dfs(nx, ny, k, map[nx][ny], cnt + 1);
+				check[nx][ny] = false;
+			}
 		}
+		answer = Math.max(answer,cnt);
 	}
 
-	static void bfs() {
-		int cnt = 0;
-		while(!q.isEmpty()) {
-			Pos now = q.poll();			
-			for(int i = 0; i < 4; i++) {
-				int dx = now.x + X[i];
-				int dy = now.y + Y[i];
-				
-				if(dx < 0 || dy < 0 || dx >= n || dy >= n)
-					continue;
-				
-				if(map[now.x][now.y] <= map[dx][dy]) {
-					while(k--!=0) {
-						for(int j = 0; j < 4; j++) {
-							int xx = dx + X[j];
-							int yy = dy + X[j];
-						}
-						
-						
-					}
-				}
-				
-				q.add(new Pos(dx, dy, now.cnt+1));
-				answer = Math.max(answer, q.peekLast().cnt);
-			}
-			
-		}
-	}
-	
-	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 		int T = Integer.parseInt(br.readLine());
 
 		for (int t = 1; t <= T; t++) {
 			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-			n = Integer.parseInt(st.nextToken());
-			k = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(st.nextToken());
+			K = Integer.parseInt(st.nextToken());
 			int max = -1;
-			map = new int[n][n];
+			map = new int[N][N];
+			check = new boolean[N][N];
+			answer = 0;
 
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < N; i++) {
 				st = new StringTokenizer(br.readLine(), " ");
-				for (int j = 0; j < n; j++) {
+				for (int j = 0; j < N; j++) {
 					map[i][j] = Integer.parseInt(st.nextToken());
 					max = Math.max(max, map[i][j]);
 				}
 			}
 
-			q = new LinkedList<>();
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					if (map[i][j] == max) {
-						q.add(new Pos(i, j, 1));
-						bfs();
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < N; j++) {
+					if(map[i][j] == max) {
+						check[i][j] = true;
+						dfs(i, j, K, map[i][j], 1);
+						check[i][j] = false;
 					}
 				}
 			}
-
-			System.out.println(answer);
+			sb.append("#").append(t).append(" ").append(answer).append("\n");
 		}
+		System.out.println(sb.toString());
 	}
-
-
 }
