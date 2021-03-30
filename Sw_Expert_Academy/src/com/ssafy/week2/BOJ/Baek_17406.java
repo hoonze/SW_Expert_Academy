@@ -26,19 +26,45 @@ public class Baek_17406 {
 		}
 	}
 
-    public static void rotate(int idx) {
-        int r = val[idx].a; int c = val[idx].b; int s = val[idx].c;
-        int mR = r-s; int mC = c-s; int MR = r+s; int MC = c+s;
+	static void rotate(Val v) {
+		int ROW = v.a - v.c;
+		int COL = v.b - v.c;
+		int dir = 1;
+		int n = v.a + v.c;
+		int m = v.b + v.c;
+		for (int i = 0; i < Math.min(n, m); i++, n--, m--) {
+			// 가로
+			int row = ROW + i;
+			int col = COL + i;
+			int start = temp[row][col];
+			// 세로
+			for (int j = i; j < n - ROW; j++) {
+				temp[row][col] = temp[row + dir][col];
+				row += dir;
+			}
 
-        for(int i = 0; i < s; i++ ) {
-            int start = temp[mR+i][mC+i];
-            for(int j = mR + i; j < MR - i; j++) temp[j][mC+i] = temp[j+1][mC+i];
-            for(int j = mC + i; j < MC - i; j++) temp[MR-i][j] = temp[MR-i][j+1];
-            for(int j = MR - i; j > mR + i; j--) temp[j][MC-i] = temp[j-1][MC-i];
-            for(int j = MC - i; j > mC + i + 1; j--) temp[mR+i][j] = temp[mR+i][j-1];
-            temp[mR+i][mC+i+1] = start;
-        }
-    }
+			// 가로
+			for (int j = i; j < m - COL; j++) {
+				temp[row][col] = temp[row][col + dir];
+				col += dir;
+			}
+			dir *= -1;
+			// 역세로
+			for (int j = i; j < n - ROW; j++) {
+				temp[row][col] = temp[row + dir][col];
+				row += dir;
+			}
+			// 역가로
+			for (int j = i; j < m - COL; j++) {
+				temp[row][col] = temp[row][col + dir];
+				col += dir;
+			}
+
+			temp[row][col + 1] = start;
+
+			dir *= -1;
+		}
+	}
 
 	static void copyMap() {
 		temp = new int[N + 1][M + 1];
@@ -54,7 +80,7 @@ public class Baek_17406 {
 		if (cnt == K) {
 			copyMap();
 			for (int k = 0; k < res.length; k++) {
-				rotate(res[k]);
+				rotate(val[res[k]]);
 			}
 			for(int i = 1; i <= N; i++) {
 				int sum = 0;
